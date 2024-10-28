@@ -83,8 +83,8 @@ namespace vMenuClient.menus
             #endregion
 
             #region addonweapons submenu
-            var addonWeaponsBtn = new MenuItem("Addon Weapons", "Equip / remove addon weapons available on this server.");
-            var addonWeaponsMenu = new Menu("Addon Weapons", "Equip/Remove Addon Weapons");
+            var addonWeaponsBtn = new MenuItem("~b~[Member] ~s~Custom Weapons", "Equip / remove addon weapons available on this server.");
+            var addonWeaponsMenu = new Menu("Custom Weapons", "Equip/Remove Addon Weapons");
             MenuController.AddSubmenu(menu, addonWeaponsMenu);
             #endregion
 
@@ -267,7 +267,7 @@ namespace vMenuClient.menus
             if (addonWeaponsMenu.Size == 0)
             {
                 addonWeaponsBtn.LeftIcon = MenuItem.Icon.LOCK;
-                addonWeaponsBtn.Description = "This option is not available on this server because you don't have permission to use it, or it is not setup correctly.";
+                addonWeaponsBtn.Description = "~r~You must join the discord to access this. After joining, restart FiveM. ~b~(discord.gg/fivemsandbox)";
                 addonWeaponsBtn.Enabled = false;
             }
             #endregion
