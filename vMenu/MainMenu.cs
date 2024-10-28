@@ -651,7 +651,7 @@ namespace vMenuClient
             {
                 BannedPlayersMenu = new BannedPlayers();
                 var menu = BannedPlayersMenu.GetMenu();
-                var button = new MenuItem("Banned Players", "View and manage all banned players in this menu.")
+                var button = new MenuItem("~g~[Staff] ~s~Banned Players", "View and manage all banned players in this menu.")
                 {
                     Label = "→→→"
                 };
@@ -751,7 +751,7 @@ namespace vMenuClient
                 AddMenu(PlayerSubmenu, menu2, button2);
             }
 
-            var worldSubmenuBtn = new MenuItem("World Related Options", "Open this submenu for world related subcategories.") { Label = "→→→" };
+            var worldSubmenuBtn = new MenuItem("~o~[Bronze] ~s~World Related Options", "Open this submenu for world related subcategories.") { Label = "→→→" };
             Menu.AddMenuItem(worldSubmenuBtn);
 
             // Add the time options menu.
