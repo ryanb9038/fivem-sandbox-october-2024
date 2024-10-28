@@ -40,7 +40,7 @@ namespace vMenuClient.menus
         private void CreateMenu()
         {
             // Create the menu.
-            menu = new Menu(Game.Player.Name, "Weather Options");
+            menu = new Menu(Game.Player.Name, "~o~[Bronze] ~s~Weather Options");
 
             dynamicWeatherEnabled = new MenuCheckboxItem("~g~[Staff] ~s~Toggle Dynamic Weather", "Enable or disable dynamic weather changes.", EventManager.DynamicWeatherEnabled);
             blackout = new MenuCheckboxItem("~g~[Staff] ~s~Toggle Blackout", "This disables or enables all lights across the map.", EventManager.IsBlackoutEnabled);
