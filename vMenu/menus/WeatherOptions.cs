@@ -42,8 +42,8 @@ namespace vMenuClient.menus
             // Create the menu.
             menu = new Menu(Game.Player.Name, "Weather Options");
 
-            dynamicWeatherEnabled = new MenuCheckboxItem("Toggle Dynamic Weather", "Enable or disable dynamic weather changes.", EventManager.DynamicWeatherEnabled);
-            blackout = new MenuCheckboxItem("Toggle Blackout", "This disables or enables all lights across the map.", EventManager.IsBlackoutEnabled);
+            dynamicWeatherEnabled = new MenuCheckboxItem("~g~[Staff] ~s~Toggle Dynamic Weather", "Enable or disable dynamic weather changes.", EventManager.DynamicWeatherEnabled);
+            blackout = new MenuCheckboxItem("~g~[Staff] ~s~Toggle Blackout", "This disables or enables all lights across the map.", EventManager.IsBlackoutEnabled);
             snowEnabled = new MenuCheckboxItem("Enable Snow Effects", "This will force snow to appear on the ground and enable snow particle effects for peds and vehicles. Combine with X-MAS or Light Snow weather for best results.", ConfigManager.GetSettingsBool(ConfigManager.Setting.vmenu_enable_snow));
             var extrasunny = new MenuItem("Extra Sunny", "Set the weather to ~y~extra sunny~s~!") { ItemData = "EXTRASUNNY" };
             var clear = new MenuItem("Clear", "Set the weather to ~y~clear~s~!") { ItemData = "CLEAR" };
