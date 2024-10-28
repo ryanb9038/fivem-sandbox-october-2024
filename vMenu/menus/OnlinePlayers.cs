@@ -43,14 +43,14 @@ namespace vMenuClient.menus
             var sendMessage = new MenuItem("Send Private Message", "Sends a private message to this player. ~r~Note: staff may be able to see all PM's.");
             var teleport = new MenuItem("Teleport To Player", "Teleport to this player.");
             var teleportVeh = new MenuItem("Teleport Into Player Vehicle", "Teleport into the vehicle of the player.");
-            var summon = new MenuItem("Summon Player", "Teleport the player to you.");
+            var summon = new MenuItem("~g~[Staff] ~s~Summon Player", "Teleport the player to you.");
             var toggleGPS = new MenuItem("Toggle GPS", "Enables or disables the GPS route on your radar to this player.");
             var spectate = new MenuItem("Spectate Player", "Spectate this player. Click this button again to stop spectating.");
-            var printIdentifiers = new MenuItem("Print Identifiers", "This will print the player's identifiers to the client console (F8). And also save it to the CitizenFX.log file.");
-            var kill = new MenuItem("~r~Kill Player", "Kill this player, note they will receive a notification saying that you killed them. It will also be logged in the Staff Actions log.");
-            var kick = new MenuItem("~r~Kick Player", "Kick the player from the server.");
-            var ban = new MenuItem("~r~Ban Player Permanently", "Ban this player permanently from the server. Are you sure you want to do this? You can specify the ban reason after clicking this button.");
-            var tempban = new MenuItem("~r~Ban Player Temporarily", "Give this player a tempban of up to 30 days (max). You can specify duration and ban reason after clicking this button.");
+            var printIdentifiers = new MenuItem("~g~[Staff] ~s~Print Identifiers", "This will print the player's identifiers to the client console (F8). And also save it to the CitizenFX.log file.");
+            var kill = new MenuItem("~r~[Admin] ~s~Kill Player", "Kill this player, note they will receive a notification saying that you killed them. It will also be logged in the Staff Actions log.");
+            var kick = new MenuItem("~g~[Staff] ~s~Kick Player", "Kick the player from the server.");
+            var ban = new MenuItem("~r~[Admin] ~s~Ban Player Permanently", "Ban this player permanently from the server. Are you sure you want to do this? You can specify the ban reason after clicking this button.");
+            var tempban = new MenuItem("~g~[Staff] ~s~Ban Player Temporarily", "Give this player a tempban of up to 30 days (max). You can specify duration and ban reason after clicking this button.");
 
             // always allowed
             playerMenu.AddMenuItem(sendMessage);
