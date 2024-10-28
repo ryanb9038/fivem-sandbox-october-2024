@@ -640,12 +640,12 @@ namespace vMenuServer
                 CurrentWeather = random switch
                 {
                     0 or 1 or 2 or 3 or 4 or 5 => CurrentWeather == "EXTRASUNNY" ? "CLEAR" : "EXTRASUNNY",
-                    6 or 7 or 8 => CurrentWeather == "SMOG" ? "FOGGY" : "SMOG",
+                    6 or 7 or 8 => CurrentWeather == "EXTRASUNNY" ? "CLEAR" : "EXTRASUNNY",
                     9 or 10 or 11 => CurrentWeather == "CLOUDS" ? "OVERCAST" : "CLOUDS",
                     12 or 13 or 14 => CurrentWeather == "CLOUDS" ? "OVERCAST" : "CLOUDS",
                     15 => CurrentWeather == "OVERCAST" ? "THUNDER" : "OVERCAST",
                     16 => CurrentWeather == "CLOUDS" ? "EXTRASUNNY" : "RAIN",
-                    _ => CurrentWeather == "FOGGY" ? "SMOG" : "FOGGY",
+                    _ => CurrentWeather == "EXTRASUNNY" ? "CLEAR" : "EXTRASUNNY",
                 };
             }
 
