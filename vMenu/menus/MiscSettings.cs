@@ -88,7 +88,7 @@ namespace vMenuClient.menus
             menu = new Menu(Game.Player.Name, "Misc Settings");
             teleportOptionsMenu = new Menu(Game.Player.Name, "Teleport Options");
             developerToolsMenu = new Menu(Game.Player.Name, "Development Tools");
-            entitySpawnerMenu = new Menu(Game.Player.Name, "Entity Spawner");
+            entitySpawnerMenu = new Menu(Game.Player.Name, "~g~[Staff] ~s~Entity Spawner");
 
             // teleport menu
             var teleportMenu = new Menu(Game.Player.Name, "Teleport Locations");
