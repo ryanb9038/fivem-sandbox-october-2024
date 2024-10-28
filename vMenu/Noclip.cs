@@ -232,7 +232,7 @@ namespace vMenuClient
                 SetEntityCollision(noclipEntity, false, false);
                 SetEntityCoordsNoOffset(noclipEntity, newPos.X, newPos.Y, newPos.Z, true, true, true);
 
-                SetEntityVisible(noclipEntity, false, false);
+                SetEntityVisible(noclipEntity, true, true);
                 SetLocalPlayerVisibleLocally(true);
                 SetEntityAlpha(noclipEntity, (int)(255 * 0.2), 0);
 
