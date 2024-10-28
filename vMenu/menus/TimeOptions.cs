@@ -24,7 +24,7 @@ namespace vMenuClient.menus
             menu = new Menu(Game.Player.Name, "Time Options");
 
             // Create all menu items.
-            freezeTimeToggle = new MenuItem("Freeze/Unfreeze Time", "Enable or disable time freezing.");
+            freezeTimeToggle = new MenuItem("~g~[Staff] ~s~Freeze/Unfreeze Time", "Enable or disable time freezing.");
             var earlymorning = new MenuItem("Early Morning", "Set the time to 06:00.")
             {
                 Label = "06:00"
