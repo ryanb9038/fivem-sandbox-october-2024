@@ -24,7 +24,7 @@ namespace vMenuClient
         public static bool PermissionsSetupComplete => ArePermissionsSetup;
         public static bool ConfigOptionsSetupComplete = false;
 
-        public static string MenuToggleKey { get; private set; } = "M"; // M by default
+        public static string MenuToggleKey { get; private set; } = "F1"; // M by default
         public static string NoClipKey { get; private set; } = "F2"; // F2 by default 
         public static Menu Menu { get; private set; }
         public static Menu PlayerSubmenu { get; private set; }
