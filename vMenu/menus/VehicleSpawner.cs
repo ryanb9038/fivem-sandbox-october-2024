@@ -45,8 +45,8 @@ namespace vMenuClient.menus
 
             #region addon cars menu
             // Vehicle Addons List
-            var addonCarsMenu = new Menu("Addon Vehicles", "Spawn An Addon Vehicle");
-            var addonCarsBtn = new MenuItem("Addon Vehicles", "A list of addon vehicles available on this server.") { Label = "→→→" };
+            var addonCarsMenu = new Menu("Custom Vehicles", "Spawn An Addon Vehicle");
+            var addonCarsBtn = new MenuItem("~g~Custom Vehicles", "A list of addon vehicles available on this server.") { Label = "→→→" };
 
             menu.AddMenuItem(addonCarsBtn);
 
