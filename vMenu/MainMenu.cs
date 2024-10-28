@@ -174,7 +174,7 @@ namespace vMenuClient
             }
             else
             {
-                MenuToggleKey = "M";
+                MenuToggleKey = "F1";
             }
             MenuController.MenuToggleKey = (Control)(-1); // disables the menu toggle key
             RegisterKeyMapping($"vMenu:{KeyMappingID}:NoClip", "vMenu NoClip Toggle Button", "keyboard", NoClipKey);
