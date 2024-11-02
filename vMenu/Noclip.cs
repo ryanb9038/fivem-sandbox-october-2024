@@ -239,7 +239,7 @@ namespace vMenuClient
                 SetEveryoneIgnorePlayer(Game.PlayerPed.Handle, true);
                 SetPoliceIgnorePlayer(Game.PlayerPed.Handle, true);
 
-                private void DisableOrEnableVehicleWeapons()
+                void DisableOrEnableVehicleWeapons()
                 {
                     // Get the player's Ped and the vehicle they are in
                     int playerPed = API.PlayerPedId();
