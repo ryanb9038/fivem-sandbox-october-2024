@@ -239,28 +239,6 @@ namespace vMenuClient
                 SetEveryoneIgnorePlayer(Game.PlayerPed.Handle, true);
                 SetPoliceIgnorePlayer(Game.PlayerPed.Handle, true);
 
-                void DisableOrEnableVehicleWeapons()
-                {
-                    // Get the player's Ped and the vehicle they are in
-                    int playerPed = API.PlayerPedId();
-                    int vehicle = API.GetVehiclePedIsIn(playerPed, false);
-
-                    // Check if the player is in a vehicle
-                    if (vehicle != 0)
-                    {
-                        if (isNoclipActive)
-                        {
-                          // Disable vehicle weapons when noclip is active
-                        API.SetVehicleWeaponsDisabled(vehicle, true);
-                        }
-                        else
-                        {
-                          // Re-enable vehicle weapons when noclip is deactivated
-                        API.SetVehicleWeaponsDisabled(vehicle, false);
-                        }
-                    }
-                }
-
                 // After the next game tick, reset the entity properties.
                 await Delay(0);
                 FreezeEntityPosition(noclipEntity, false);
