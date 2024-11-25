@@ -95,6 +95,7 @@ namespace vMenuClient
             }
             while (NoclipActive)
             {
+                SetCurrentPedWeapon(Game.PlayerPed.Handle, (uint)GetHashKey("WEAPON_UNARMED"), true);
                 if (!IsHudHidden())
                 {
                     BeginScaleformMovieMethod(Scale, "CLEAR_ALL");
@@ -244,6 +245,7 @@ namespace vMenuClient
                 FreezeEntityPosition(noclipEntity, false);
                 SetEntityInvincible(noclipEntity, false);
                 SetEntityCollision(noclipEntity, true, true);
+                SetCurrentPedWeapon(Game.PlayerPed.Handle, (uint)GetHashKey("WEAPON_UNARMED"), false);
 
                 // If the player is not set as invisible by PlayerOptions or if the noclip entity is not the player ped, reset the visibility
                 if (MainMenu.PlayerOptionsMenu == null || !MainMenu.PlayerOptionsMenu.PlayerInvisible || (MainMenu.PlayerOptionsMenu.PlayerInvisible && noclipEntity == Game.PlayerPed.Handle))
