@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 using CitizenFX.Core;
 
@@ -108,6 +107,7 @@ namespace vMenuClient.menus
                             }
 
                             //if (AddonVehicles.Count(av => GetVehicleClassFromName(av.Value) == cat && IsModelInCdimage(av.Value)) > 0)
+                            using System.Threading;
                             if (categoryMenu.Size > 0)
                             {
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
