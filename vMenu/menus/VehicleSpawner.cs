@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using CitizenFX.Core;
 
@@ -117,7 +118,7 @@ namespace vMenuClient.menus
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
                                     categoryBtn.Enabled = false;
                                     categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    Delay(500);
+                                    Threading.Sleep(1000);
                                     categoryBtn.Enabled = true;
                                     categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                 };
