@@ -115,11 +115,11 @@ namespace vMenuClient.menus
                                 categoryMenu.OnItemSelect += (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
-                                    carBtn.Enabled = false;
-                                    carBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    Delay(500);
-                                    carBtn.Enabled = true;
-                                    carBtn.LeftIcon = false;
+                                    categoryBtn.Enabled = false;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
+                                    await Delay(500);
+                                    categoryBtn.Enabled = true;
+                                    categoryBtn.LeftIcon = false;
                                 };
                             }
                             else
