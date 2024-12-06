@@ -118,7 +118,11 @@ namespace vMenuClient.menus
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
                                     categoryBtn.Enabled = false;
                                     categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    Wait(2000);
+                                    Console.WriteLine("Vehicle spawned, 2 sec delay");
+                                    Debug.WriteLine("Vehicle spawned, 2 sec delay");
+                                    await task.delay(2000);
+                                    Debug.WriteLine("2-sec delay over.");
+                                    Console.WriteLine("2-sec delay over.");
                                     categoryBtn.Enabled = true;
                                     categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                 };
