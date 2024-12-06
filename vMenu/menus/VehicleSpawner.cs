@@ -112,9 +112,14 @@ namespace vMenuClient.menus
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
-                                categoryMenu.OnItemSelect += (sender, item, index) =>
+                                async categoryMenu.OnItemSelect += (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
+                                    categoryBtn.Enabled = false;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
+                                    await Task.Delay(2000);
+                                    categoryBtn.Enabled = true;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                 };
                             }
                             else
