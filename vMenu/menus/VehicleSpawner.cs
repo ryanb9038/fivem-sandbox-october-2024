@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 using CitizenFX.Core;
 
@@ -115,12 +114,12 @@ namespace vMenuClient.menus
 
                                 categoryMenu.OnItemSelect += async (sender, item, index) =>
                                 {
-                                    await SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
-                                    await categoryBtn.Enabled = false;
-                                    await categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    await Task.Delay(2000);
-                                    await categoryBtn.Enabled = true;
-                                    await categoryBtn.LeftIcon = MenuItem.Icon.NONE;
+                                    SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
+                                    categoryBtn.Enabled = false;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
+                                    await Delay(2000);
+                                    categoryBtn.Enabled = true;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                 };
                             }
                             else
