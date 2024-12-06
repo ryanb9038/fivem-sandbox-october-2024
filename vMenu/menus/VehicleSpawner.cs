@@ -47,7 +47,7 @@ namespace vMenuClient.menus
             // Vehicle Addons List
             var addonCarsMenu = new Menu("Custom Vehicles", "Spawn An Addon Vehicle");
             var addonCarsBtn = new MenuItem("~g~Custom Vehicles", "A list of addon vehicles available on this server.") { Label = "→→→" };
-            using System.Threading;
+            
             menu.AddMenuItem(addonCarsBtn);
 
             if (IsAllowed(Permission.VSAddon))
@@ -107,7 +107,6 @@ namespace vMenuClient.menus
                             }
 
                             //if (AddonVehicles.Count(av => GetVehicleClassFromName(av.Value) == cat && IsModelInCdimage(av.Value)) > 0)
-                            using System.Threading;
                             if (categoryMenu.Size > 0)
                             {
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
@@ -116,11 +115,6 @@ namespace vMenuClient.menus
                                 categoryMenu.OnItemSelect += (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
-                                    categoryBtn.Enabled = false;
-                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    Threading.Sleep(1000);
-                                    categoryBtn.Enabled = true;
-                                    categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                 };
                             }
                             else
