@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Diagnostics;
+using System.Threading.Tasks;
 
 using CitizenFX.Core;
 
@@ -114,18 +113,14 @@ namespace vMenuClient.menus
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
-                                categoryMenu.OnItemSelect += (sender, item, index) =>
+                                categoryMenu.OnItemSelect += async (sender, item, index) =>
                                 {
-                                    SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
-                                    categoryBtn.Enabled = false;
-                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    Console.WriteLine("Vehicle spawned, 2 sec delay");
-                                    Debug.WriteLine("Vehicle spawned, 2 sec delay");
-                                    await task.delay(2000);
-                                    Debug.WriteLine("2-sec delay over.");
-                                    Console.WriteLine("2-sec delay over.");
-                                    categoryBtn.Enabled = true;
-                                    categoryBtn.LeftIcon = MenuItem.Icon.NONE;
+                                    await SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
+                                    await categoryBtn.Enabled = false;
+                                    await categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
+                                    await Task.Delay(2000);
+                                    await categoryBtn.Enabled = true;
+                                    await categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                 };
                             }
                             else
