@@ -117,7 +117,7 @@ namespace vMenuClient.menus
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
                                     categoryBtn.Enabled = false;
                                     categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    await task.delay(ms);
+                                    await task.delay(2000);
                                     categoryBtn.Enabled = true;
                                     categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                 };
