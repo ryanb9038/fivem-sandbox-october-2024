@@ -114,7 +114,7 @@ namespace vMenuClient.menus
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
                                 var timer = GetGameTimer();
-                                categoryMenu.OnItemSelect += (sender, item, index) =>
+                                categoryMenu.OnItemSelect += async (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
                                     categoryBtn.Enabled = false;
