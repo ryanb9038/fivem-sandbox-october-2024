@@ -119,11 +119,10 @@ namespace vMenuClient.menus
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
                                     categoryBtn.Enabled = false;
                                     categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    if (GetGameTimer() - timer > (2 * 1000)) // 2 second timeout
+                                    await (GetGameTimer() - timer > (2 * 1000)) // 2 second timeout
                                         {
                                             categoryBtn.Enabled = true;
                                             categoryBtn.LeftIcon = MenuItem.Icon.NONE;
-                                            break;
                                         }
                                     
                                 };
