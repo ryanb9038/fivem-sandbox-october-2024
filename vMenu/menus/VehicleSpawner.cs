@@ -117,8 +117,6 @@ namespace vMenuClient.menus
                                 categoryMenu.OnItemSelect += (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle); 
-                                    categoryBtn.Enabled = false;
-                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
                                 };
                             }
                             else
