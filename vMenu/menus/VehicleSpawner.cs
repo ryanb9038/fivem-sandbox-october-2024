@@ -109,17 +109,22 @@ namespace vMenuClient.menus
                             }
 
                             //if (AddonVehicles.Count(av => GetVehicleClassFromName(av.Value) == cat && IsModelInCdimage(av.Value)) > 0)
-                            if (categoryMenu.Size > 0)
+                            if async (categoryMenu.Size > 0)
                             {
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
-                                categoryMenu.OnItemSelect += async (sender, item, index) =>
+                                categoryMenu.OnItemSelect += (sender, item, index) =>
                                 {
-                                    SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
-                                    await Task.Delay(2000);
-                                    SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
+                                    SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle); 
+                                    categoryBtn.Enabled = false;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
                                 };
+                                await Task.Delay(2000);
+                                {
+                                    categoryBtn.Enabled = true;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.NONE;
+                                }
                             }
                             else
                             {
