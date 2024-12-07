@@ -114,16 +114,14 @@ namespace vMenuClient.menus
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
                                 var timer = GetGameTimer();
-                                categoryMenu.OnItemSelect += async (sender, item, index) =>
+                                categoryMenu.OnItemSelect += (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
                                     categoryBtn.Enabled = false;
                                     categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
-                                    await GetGameTimer() - timer > (2 * 1000); // 2 second timeout
-                                        {
-                                            categoryBtn.Enabled = true;
-                                            categoryBtn.LeftIcon = MenuItem.Icon.NONE;
-                                        }
+                                    GetGameTimer() - timer > (2 * 1000); // 2 second timeout
+                                    categoryBtn.Enabled = true;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.NONE;
                                     
                                 };
                             }
