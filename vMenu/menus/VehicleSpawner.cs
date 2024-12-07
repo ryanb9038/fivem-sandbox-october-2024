@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using CitizenFX.Core;
 
@@ -112,9 +113,19 @@ namespace vMenuClient.menus
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
-                                categoryMenu.OnItemSelect += (sender, item, index) =>
+                                var timer = GetGameTimer();
+                                categoryMenu.OnItemSelect += async (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
+                                    categoryBtn.Enabled = false;
+                                    categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
+                                    if (GetGameTimer() - timer > (2 * 1000)) // 2 second timeout
+                                        {
+                                            categoryBtn.Enabled = true;
+                                            categoryBtn.LeftIcon = MenuItem.Icon.NONE;
+                                            break;
+                                        }
+                                    
                                 };
                             }
                             else
