@@ -109,12 +109,12 @@ namespace vMenuClient.menus
                             }
 
                             //if (AddonVehicles.Count(av => GetVehicleClassFromName(av.Value) == cat && IsModelInCdimage(av.Value)) > 0)
-                            if async (categoryMenu.Size > 0)
+                            if (categoryMenu.Size > 0)
                             {
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
-                                categoryMenu.OnItemSelect += (sender, item, index) =>
+                                categoryMenu.OnItemSelect += async (sender, item, index) =>
                                 {
                                     SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle); 
                                     categoryBtn.Enabled = false;
