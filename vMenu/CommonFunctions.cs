@@ -23,6 +23,7 @@ namespace vMenuClient
         #region Variables
         private static string _currentScenario = "";
         private static Vehicle _previousVehicle;
+        private static DateTime lastSpawnTime = DateTime.MinValue; 
 
         internal static bool DriveToWpTaskActive = false;
         internal static bool DriveWanderTaskActive = false;
@@ -1225,45 +1226,57 @@ namespace vMenuClient
         /// <param name="vehicleInfo">All information needed for a saved vehicle to re-apply all mods.</param>
         /// <param name="saveName">Used to get/set info about the saved vehicle data.</param>
         public static async Task<int> SpawnVehicle(uint vehicleHash, bool spawnInside, bool replacePrevious, bool skipLoad, VehicleInfo vehicleInfo, string saveName = null, float x = 0f, float y = 0f, float z = 0f, float heading = -1f)
+{
+    // Get the cooldown time from ConVar (default to 10 seconds if not set)
+    int spawnCooldown = int.Parse(GetConvar("vehicle_spawn_cooldown", "1"));
+
+    // Check cooldown before spawning the vehicle
+    if ((DateTime.UtcNow - lastSpawnTime).TotalSeconds < spawnCooldown)
+    {
+        Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
+        return 0;
+    }
+
+    var speed = 0f;
+    var rpm = 0f;
+    if (Game.PlayerPed.IsInVehicle())
+    {
+        var tmpOldVehicle = GetVehicle();
+        speed = GetEntitySpeedVector(tmpOldVehicle.Handle, true).Y; // get forward/backward speed only
+        rpm = tmpOldVehicle.CurrentRPM;
+    }
+
+    var modelClass = GetVehicleClassFromName(vehicleHash);
+    if (!VehicleSpawner.allowedCategories[modelClass])
+    {
+        Notify.Alert("You are not allowed to spawn this vehicle. Join the discord for access to all vehicles. (discord.gg/fivemsandbox)");
+        return 0;
+    }
+
+    if (!skipLoad)
+    {
+        var successFull = await LoadModel(vehicleHash);
+        if (!successFull || !IsModelAVehicle(vehicleHash))
         {
-            var speed = 0f;
-            var rpm = 0f;
-            if (Game.PlayerPed.IsInVehicle())
-            {
-                var tmpOldVehicle = GetVehicle();
-                speed = GetEntitySpeedVector(tmpOldVehicle.Handle, true).Y; // get forward/backward speed only
-                rpm = tmpOldVehicle.CurrentRPM;
-            }
+            Notify.Error(CommonErrors.InvalidModel);
+            return 0;
+        }
+    }
 
-            var modelClass = GetVehicleClassFromName(vehicleHash);
-            if (!VehicleSpawner.allowedCategories[modelClass])
-            {
-                Notify.Alert("This vehicle is restricted! To access all vehicles, join the discord. discord.gg/fivemsandbox");
-                return 0;
-            }
+    Log("Spawning of vehicle is NOT cancelled, if this model is invalid then there's something wrong.");
 
-            if (!skipLoad)
-            {
-                var successFull = await LoadModel(vehicleHash);
-                if (!successFull || !IsModelAVehicle(vehicleHash))
-                {
-                    // Vehicle model is invalid.
-                    Notify.Error(CommonErrors.InvalidModel);
-                    return 0;
-                }
-            }
+    // Get the heading & position for where the vehicle should be spawned.
+    var pos = new Vector3(x, y, z);
+    if (pos.IsZero)
+    {
+        pos = spawnInside ? GetEntityCoords(Game.PlayerPed.Handle, true) : GetOffsetFromEntityInWorldCoords(Game.PlayerPed.Handle, 0f, 8f, 0f);
+        pos += new Vector3(0f, 0f, 1f);
+    }
 
-            Log("Spawning of vehicle is NOT cancelled, if this model is invalid then there's something wrong.");
+    heading = heading == -1 ? GetEntityHeading(Game.PlayerPed.Handle) + (spawnInside ? 0f : 90f) : heading;
 
-            // Get the heading & position for where the vehicle should be spawned.
-            var pos = new Vector3(x, y, z);
-            if (pos.IsZero)
-            {
-                pos = spawnInside ? GetEntityCoords(Game.PlayerPed.Handle, true) : GetOffsetFromEntityInWorldCoords(Game.PlayerPed.Handle, 0f, 8f, 0f);
-                pos += new Vector3(0f, 0f, 1f);
-            }
-
-            heading = heading == -1 ? GetEntityHeading(Game.PlayerPed.Handle) + (spawnInside ? 0f : 90f) : heading;
+    // Update the last spawn time
+    lastSpawnTime = DateTime.UtcNow;
 
             // If the previous vehicle exists...
             if (_previousVehicle != null)
