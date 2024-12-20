@@ -1227,7 +1227,7 @@ namespace vMenuClient
         /// <param name="saveName">Used to get/set info about the saved vehicle data.</param>
         public static async Task<int> SpawnVehicle(uint vehicleHash, bool spawnInside, bool replacePrevious, bool skipLoad, VehicleInfo vehicleInfo, string saveName = null, float x = 0f, float y = 0f, float z = 0f, float heading = -1f)
 {
-    // Get the cooldown time from ConVar (default to 10 seconds if not set)
+    // Get the cooldown time from ConVar (default to 3 seconds if not set)
     int spawnCooldown = int.Parse(GetConvar("vehicle_spawn_cooldown", "3"));
 
     // Check cooldown before spawning the vehicle
