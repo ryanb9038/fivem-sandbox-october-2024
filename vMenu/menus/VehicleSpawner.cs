@@ -20,6 +20,7 @@ namespace vMenuClient.menus
         // Variables
         private Menu menu;
         public static Dictionary<string, uint> AddonVehicles;
+        public static DateTime lastSpawnTime = DateTime.MinValue;
 
         public bool SpawnInVehicle { get; private set; } = UserDefaults.VehicleSpawnerSpawnInside;
         public bool ReplaceVehicle { get; private set; } = UserDefaults.VehicleSpawnerReplacePrevious;
