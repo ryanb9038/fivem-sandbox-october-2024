@@ -26,6 +26,42 @@ namespace vMenuClient.menus
         readonly Menu playerMenu = new("Online Players", "Player:");
         IPlayer currentPlayer = new NativePlayer(Game.Player);
 
+        public async Task LogPrivateMessageToDiscord(string senderName, int senderId, string senderSteamId, string senderDiscordId, string receiverName, int receiverId, string message)
+        {
+            // Replace with your actual Discord webhook URL
+            string webhookUrl = "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN";
+
+            // Prepare the payload
+            var payload = new
+            {
+                embeds = new[]
+                {
+                    new
+                    {
+                        title = "Private Message Log",
+                        description = $"A private message was sent between players.",
+                        color = 0x3498db, // Embed color (blue)
+                        fields = new[]
+                        {
+                            new { name = "Sender", value = $"**Name:** {senderName}\n**ID:** {senderId}\n**Steam ID:** [{senderSteamId}](https://steamcommunity.com/profiles/{senderSteamId})\n**Discord ID:** <@{senderDiscordId}>", inline = false },
+                            new { name = "Receiver", value = $"**Name:** {receiverName}\n**ID:** {receiverId}", inline = false },
+                            new { name = "Message", value = $"```{message}```", inline = false }
+                        },
+                        timestamp = DateTime.UtcNow.ToString("o")
+                    }
+                }
+            };
+
+            // Serialize payload to JSON
+            var jsonPayload = JsonConvert.SerializeObject(payload);
+
+            // Send HTTP POST request to the Discord webhook
+            using (HttpClient client = new HttpClient())
+            {
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+                await client.PostAsync(webhookUrl, content);
+            }
+        }
 
         /// <summary>
         /// Creates the menu.
@@ -122,13 +158,22 @@ namespace vMenuClient.menus
                         {
                             TriggerServerEvent("vMenu:SendMessageToPlayer", currentPlayer.ServerId, message);
                             PrivateMessage(currentPlayer.ServerId.ToString(), message, true);
+                
+                            // Log the private message to Discord
+                            string senderName = Game.Player.Name;
+                            int senderId = Game.Player.ServerId;
+                            string senderSteamId = GetPlayerIdentifier(senderId, "steam");
+                            string senderDiscordId = GetPlayerIdentifier(senderId, "discord");
+                            string receiverName = currentPlayer.Name;
+                            int receiverId = currentPlayer.ServerId;
+                
+                            await LogPrivateMessageToDiscord(senderName, senderId, senderSteamId, senderDiscordId, receiverName, receiverId, message);
                         }
                     }
                     else
                     {
                         Notify.Error("You can't send a private message if you have private messages disabled yourself. Enable them in the Misc Settings menu and try again.");
                     }
-
                 }
                 // teleport (in vehicle) button
                 else if (item == teleport || item == teleportVeh)
