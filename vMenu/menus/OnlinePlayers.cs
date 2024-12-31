@@ -29,7 +29,7 @@ namespace vMenuClient.menus
         public async Task LogPrivateMessageToDiscord(string senderName, int senderId, string senderSteamId, string senderDiscordId, string receiverName, int receiverId, string message)
         {
             // Replace with your actual Discord webhook URL
-            string webhookUrl = "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN";
+            string webhookUrl = "https://discord.com/api/webhooks/1323475076678422528/JqX0-JXr8n5jZaqWBP0YgXtQFJ6zmsWHoIi92E05bavxmnX1lAXUiOM1E1PmjR4onLyV";
 
             // Prepare the payload
             var payload = new
