@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,6 +21,7 @@ namespace vMenuClient.menus
         // Variables
         private Menu menu;
         public static Dictionary<string, uint> AddonVehicles;
+        public static DateTime lastSpawnTime = DateTime.MinValue;
 
         public bool SpawnInVehicle { get; private set; } = UserDefaults.VehicleSpawnerSpawnInside;
         public bool ReplaceVehicle { get; private set; } = UserDefaults.VehicleSpawnerReplacePrevious;
@@ -47,10 +49,11 @@ namespace vMenuClient.menus
 
             #region addon cars menu
             // Vehicle Addons List
-            var addonCarsMenu = new Menu("Custom Vehicles", "Spawn An Addon Vehicle");
-            var addonCarsBtn = new MenuItem("~g~Custom Vehicles", "A list of addon vehicles available on this server.") { Label = "→→→" };
-            
+            var addonCarsMenu = new Menu("Addon Vehicles", "Spawn An Addon Vehicle");
+            var addonCarsBtn = new MenuItem("Addon Vehicles", "A list of addon vehicles available on this server.") { Label = "→→→" };
+
             menu.AddMenuItem(addonCarsBtn);
+
             if (IsAllowed(Permission.VSAddon))
             {
                 if (AddonVehicles != null)
@@ -72,7 +75,7 @@ namespace vMenuClient.menus
 
                             if (!allowedCategories[cat])
                             {
-                                categoryBtn.Description = "~r~You must join the discord to access this category. After Joining, restart FiveM. ~b~(discord.gg/fivemsandbox)";
+                                categoryBtn.Description = "This vehicle class is disabled by the server.";
                                 categoryBtn.Enabled = false;
                                 categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
                                 categoryBtn.Label = "";
@@ -83,7 +86,6 @@ namespace vMenuClient.menus
                             foreach (var veh in AddonVehicles.Where(v => GetVehicleClassFromName(v.Value) == cat))
                             {
                                 var localizedName = GetLabelText(GetDisplayNameFromVehicleModel(veh.Value));
-
                                 var name = localizedName != "NULL" ? localizedName : GetDisplayNameFromVehicleModel(veh.Value);
                                 name = name != "CARNOTFOUND" ? name : veh.Key;
 
@@ -93,13 +95,14 @@ namespace vMenuClient.menus
                                     ItemData = veh.Key // store the model name in the button data.
                                 };
 
-                                // This should be impossible to be false, but we check it anyway.
+                                // Check if the model is in the CD image.
                                 if (IsModelInCdimage(veh.Value))
                                 {
                                     categoryMenu.AddMenuItem(carBtn);
                                 }
                                 else
                                 {
+                                    // If the model is not in the CD image, mark the vehicle as unavailable
                                     carBtn.Enabled = false;
                                     carBtn.Description = "This vehicle is not available. Please ask the server owner to check if the vehicle is being streamed correctly.";
                                     carBtn.LeftIcon = MenuItem.Icon.LOCK;
@@ -107,25 +110,42 @@ namespace vMenuClient.menus
                                 }
                             }
 
-                            //if (AddonVehicles.Count(av => GetVehicleClassFromName(av.Value) == cat && IsModelInCdimage(av.Value)) > 0)
+                            // Check if there are valid vehicles in the category
                             if (categoryMenu.Size > 0)
                             {
                                 MenuController.AddSubmenu(addonCarsMenu, categoryMenu);
                                 MenuController.BindMenuItem(addonCarsMenu, categoryMenu, categoryBtn);
 
-                                categoryMenu.OnItemSelect += (sender, item, index) =>
+                                // Use OnItemSelect on the categoryMenu to handle vehicle spawning and cooldown
+                                categoryMenu.OnItemSelect += async (sender, item, index) =>
                                 {
-                                    SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle); 
+                                    // Step 1: Get the cooldown time from ConVar (default to 10 seconds if not set)
+                                    int spawnCooldown = int.Parse(GetConvar("vmenu_vehicle_spawn_cooldown", "3"));
+
+                                    // Step 2: Check cooldown before spawning the vehicle
+                                    if ((DateTime.UtcNow - lastSpawnTime).TotalSeconds < spawnCooldown)
+                                    {
+                                        Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
+                                        return;
+                                    }
+
+                                    // Step 3: Proceed with vehicle spawn if cooldown has passed
+                                    lastSpawnTime = DateTime.UtcNow; // Update last spawn time
+
+                                    // Spawn the vehicle using its model name
+                                    await SpawnVehicle(item.ItemData.ToString(), SpawnInVehicle, ReplaceVehicle);
                                 };
                             }
                             else
                             {
+                                // Disable the category button if no vehicles are available
                                 categoryBtn.Description = "There are no addon cars available in this category.";
                                 categoryBtn.Enabled = false;
                                 categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
                                 categoryBtn.Label = "";
                             }
                         }
+
                         if (unavailableCars.Size > 0)
                         {
                             addonCarsMenu.AddMenuItem(unavailableCarsBtn);
@@ -150,7 +170,7 @@ namespace vMenuClient.menus
             {
                 addonCarsBtn.Enabled = false;
                 addonCarsBtn.LeftIcon = MenuItem.Icon.LOCK;
-                addonCarsBtn.Description = "~r~You must join the discord to access this category. After Joining, restart FiveM. ~b~(discord.gg/fivemsandbox)";
+                addonCarsBtn.Description = "Access to this list has been restricted by the server owner.";
             }
             #endregion
 
