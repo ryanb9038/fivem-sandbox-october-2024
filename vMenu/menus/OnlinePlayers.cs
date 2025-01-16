@@ -105,7 +105,43 @@ namespace vMenuClient.menus
                 ban.Label = "";
             };
 
-            // handle button presses for the specific player's menu.
+            
+        // Add a new method to log private messages to a Discord webhook
+        private async Task LogPrivateMessageToDiscord(int serverId, string playerName, string message)
+        {
+            try
+            {
+                // Define the Discord webhook URL
+                string webhookUrl = "YOUR_DISCORD_WEBHOOK_URL_HERE";
+
+                // Prepare the payload
+                var payload = new
+                {
+                    content = $"**Private Message Log**\n**Server ID:** {serverId}\n**Player:** {playerName}\n**Message:** {message}"
+                };
+
+                // Convert payload to JSON
+                string jsonPayload = JsonConvert.SerializeObject(payload);
+
+                using (HttpClient client = new HttpClient())
+                {
+                    // Send the POST request to the Discord webhook
+                    var response = await client.PostAsync(webhookUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Debug.WriteLine($"[vMenu] Failed to send message to Discord webhook: {response.StatusCode}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[vMenu] Error sending private message to Discord webhook: {ex.Message}");
+            }
+        }
+
+        // handle button presses for the specific player's menu.
+    
             playerMenu.OnItemSelect += async (sender, item, index) =>
             {
                 // send message
@@ -121,6 +157,7 @@ namespace vMenuClient.menus
                         else
                         {
                             TriggerServerEvent("vMenu:SendMessageToPlayer", currentPlayer.ServerId, message);
+                            await LogPrivateMessageToDiscord(currentPlayer.ServerId, currentPlayer.Name, message);
                             PrivateMessage(currentPlayer.ServerId.ToString(), message, true);
                         }
                     }
@@ -364,3 +401,31 @@ namespace vMenuClient.menus
         }
     }
 }
+
+    private async Task LogPrivateMessageToDiscord(int serverId, string playerName, string message)
+    {
+        try
+        {
+            string webhookUrl = "YOUR_DISCORD_WEBHOOK_URL_HERE";
+            var payload = new
+            {
+                content = $"**Private Message Log**\n**Server ID:** {serverId}\n**Player:** {playerName}\n**Message:** {message}"
+            };
+
+            string jsonPayload = JsonConvert.SerializeObject(payload);
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.PostAsync(webhookUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"[vMenu] Failed to send message to Discord webhook: {response.StatusCode}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[vMenu] Error sending private message to Discord webhook: {ex.Message}");
+        }
+    }
+    
