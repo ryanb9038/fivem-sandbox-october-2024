@@ -15,7 +15,7 @@ using vMenuClient.menus;
 using static CitizenFX.Core.Native.API;
 using static CitizenFX.Core.UI.Screen;
 using static vMenuShared.PermissionsManager;
-
+ 
 namespace vMenuClient
 {
     public static class CommonFunctions
