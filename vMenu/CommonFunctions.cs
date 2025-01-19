@@ -1281,7 +1281,6 @@ namespace vMenuClient
 
             // Notify the player that the vehicle is spawning
             Notify.Info("~g~Vehicle Spawning...");
-            PlaySoundFrontend(-1, "SELECT", "HUD_LIQUOR_STORE_SOUNDSET", true); // Success notification sound
 
             // If the previous vehicle exists...
             if (_previousVehicle != null)
