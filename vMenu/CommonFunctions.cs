@@ -1235,12 +1235,8 @@ namespace vMenuClient
             {
                 Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
 
-                if (!HasSoundFinished(-1))
-                {
-                    StopSound(-1);
-                }
-                
-                PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
+                    await Delay(100); // Short delay to allow sound system to prepare
+                    PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
 
                 return 0;
             }
