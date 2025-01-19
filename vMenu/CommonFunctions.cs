@@ -1235,11 +1235,12 @@ namespace vMenuClient
             {
                 Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
 
-                // Ensure the error sound reliably plays
-                await Delay(25); // Short delay to allow sound system to prepare
-
-                Vector3 playerPos = GetEntityCoords(Game.PlayerPed.Handle, true); // Get player position
-                PlaySoundFromCoord(-1, "ERROR", playerPos.X, playerPos.Y, playerPos.Z, "HUD_AMMO_SHOP_SOUNDSET", false, 0, false);
+                if (!HasSoundFinished(-1))
+                {
+                    StopSound(-1);
+                }
+                
+                PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
 
                 return 0;
             }
