@@ -1234,9 +1234,11 @@ namespace vMenuClient
             if ((DateTime.UtcNow - lastSpawnTime).TotalSeconds < spawnCooldown)
             {
                 Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
-                
+
+                // Stop any existing sounds before playing a new one
+                StopSound(-1);
                 // Ensure the error sound reliably plays
-                await Delay(50); // Short delay to allow sound system to prepare
+                await Delay(25); // Short delay to allow sound system to prepare
                 PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
             
                 return 0;
