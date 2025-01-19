@@ -1235,7 +1235,7 @@ namespace vMenuClient
             {
                 Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
 
-                    await Delay(100); // Short delay to allow sound system to prepare
+                    await Delay(200); // Short delay to allow sound system to prepare
                     PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
 
                 return 0;
@@ -1255,6 +1255,8 @@ namespace vMenuClient
             if (!VehicleSpawner.allowedCategories[modelClass])
             {
                 Notify.Alert("You are not allowed to spawn this vehicle. Join the discord for access to all vehicles. (discord.gg/fivemsandbox)");
+                await Delay(50); // Short delay to allow sound system to prepare
+                PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
                 return 0;
             }
 
