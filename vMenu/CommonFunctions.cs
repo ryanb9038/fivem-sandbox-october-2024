@@ -15,7 +15,7 @@ using vMenuClient.menus;
 using static CitizenFX.Core.Native.API;
 using static CitizenFX.Core.UI.Screen;
 using static vMenuShared.PermissionsManager;
-
+ 
 namespace vMenuClient
 {
     public static class CommonFunctions
@@ -1226,57 +1226,67 @@ namespace vMenuClient
         /// <param name="vehicleInfo">All information needed for a saved vehicle to re-apply all mods.</param>
         /// <param name="saveName">Used to get/set info about the saved vehicle data.</param>
         public static async Task<int> SpawnVehicle(uint vehicleHash, bool spawnInside, bool replacePrevious, bool skipLoad, VehicleInfo vehicleInfo, string saveName = null, float x = 0f, float y = 0f, float z = 0f, float heading = -1f)
-{
-    // Get the cooldown time from ConVar (default to 3 seconds if not set)
-    int spawnCooldown = int.Parse(GetConvar("vehicle_spawn_cooldown", "3"));
-
-    // Check cooldown before spawning the vehicle
-    if ((DateTime.UtcNow - lastSpawnTime).TotalSeconds < spawnCooldown)
-    {
-        Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
-        return 0;
-    }
-
-    var speed = 0f;
-    var rpm = 0f;
-    if (Game.PlayerPed.IsInVehicle())
-    {
-        var tmpOldVehicle = GetVehicle();
-        speed = GetEntitySpeedVector(tmpOldVehicle.Handle, true).Y; // get forward/backward speed only
-        rpm = tmpOldVehicle.CurrentRPM;
-    }
-
-    var modelClass = GetVehicleClassFromName(vehicleHash);
-    if (!VehicleSpawner.allowedCategories[modelClass])
-    {
-        Notify.Alert("You are not allowed to spawn this vehicle. Join the discord for access to all vehicles. (discord.gg/fivemsandbox)");
-        return 0;
-    }
-
-    if (!skipLoad)
-    {
-        var successFull = await LoadModel(vehicleHash);
-        if (!successFull || !IsModelAVehicle(vehicleHash))
         {
-            Notify.Error(CommonErrors.InvalidModel);
-            return 0;
-        }
-    }
+            // Get the cooldown time from ConVar (default to 3 seconds if not set)
+            int spawnCooldown = int.Parse(GetConvar("vehicle_spawn_cooldown", "3"));
 
-    Log("Spawning of vehicle is NOT cancelled, if this model is invalid then there's something wrong.");
+            // Check cooldown before spawning the vehicle
+            if ((DateTime.UtcNow - lastSpawnTime).TotalSeconds < spawnCooldown)
+            {
+                Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
 
-    // Get the heading & position for where the vehicle should be spawned.
-    var pos = new Vector3(x, y, z);
-    if (pos.IsZero)
-    {
-        pos = spawnInside ? GetEntityCoords(Game.PlayerPed.Handle, true) : GetOffsetFromEntityInWorldCoords(Game.PlayerPed.Handle, 0f, 8f, 0f);
-        pos += new Vector3(0f, 0f, 1f);
-    }
+                    await Delay(200); // Short delay to allow sound system to prepare
+                    PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
 
-    heading = heading == -1 ? GetEntityHeading(Game.PlayerPed.Handle) + (spawnInside ? 0f : 90f) : heading;
+                return 0;
+            }
 
-    // Update the last spawn time
-    lastSpawnTime = DateTime.UtcNow;
+
+            var speed = 0f;
+            var rpm = 0f;
+            if (Game.PlayerPed.IsInVehicle())
+            {
+                var tmpOldVehicle = GetVehicle();
+                speed = GetEntitySpeedVector(tmpOldVehicle.Handle, true).Y; // get forward/backward speed only
+                rpm = tmpOldVehicle.CurrentRPM;
+            }
+
+            var modelClass = GetVehicleClassFromName(vehicleHash);
+            if (!VehicleSpawner.allowedCategories[modelClass])
+            {
+                Notify.Alert("You are not allowed to spawn this vehicle. Join the discord for access to all vehicles. (discord.gg/fivemsandbox)");
+                await Delay(50); // Short delay to allow sound system to prepare
+                PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
+                return 0;
+            }
+
+            if (!skipLoad)
+            {
+                var successFull = await LoadModel(vehicleHash);
+                if (!successFull || !IsModelAVehicle(vehicleHash))
+                {
+                    Notify.Error(CommonErrors.InvalidModel);
+                    return 0;
+                }
+            }
+
+            Log("Spawning of vehicle is NOT cancelled, if this model is invalid then there's something wrong.");
+
+            // Get the heading & position for where the vehicle should be spawned.
+            var pos = new Vector3(x, y, z);
+            if (pos.IsZero)
+            {
+                pos = spawnInside ? GetEntityCoords(Game.PlayerPed.Handle, true) : GetOffsetFromEntityInWorldCoords(Game.PlayerPed.Handle, 0f, 8f, 0f);
+                pos += new Vector3(0f, 0f, 1f);
+            }
+
+            heading = heading == -1 ? GetEntityHeading(Game.PlayerPed.Handle) + (spawnInside ? 0f : 90f) : heading;
+
+            // Update the last spawn time
+            lastSpawnTime = DateTime.UtcNow;
+
+            // Notify the player that the vehicle is spawning
+            Notify.Info("~g~Vehicle Spawning...");
 
             // If the previous vehicle exists...
             if (_previousVehicle != null)
@@ -1345,8 +1355,7 @@ namespace vMenuClient
                 IsWanted = false
             };
 
-            Log($"New vehicle, hash:{vehicleHash}, handle:{vehicle.Handle}, force-re-save-name:{saveName ?? "NONE"}, created at x:{pos.X} y:{pos.Y} z:{pos.Z + 1f} " +
-                $"heading:{heading}");
+            Log($"New vehicle, hash:{vehicleHash}, handle:{vehicle.Handle}, force-re-save-name:{saveName ?? "NONE"}, created at x:{pos.X} y:{pos.Y} z:{pos.Z + 1f} heading:{heading}");
 
             // If spawnInside is true
             if (spawnInside)
@@ -1369,29 +1378,8 @@ namespace vMenuClient
                 }
             }
 
-            // If mod info about the vehicle was specified, check if it's not null.
-            if (saveName != null)
-            {
-                ApplyVehicleModsDelayed(vehicle, vehicleInfo, 500);
-            }
-
             // Set the previous vehicle to the new vehicle.
             _previousVehicle = vehicle;
-            //vehicle.Speed = speed; // retarded feature that randomly breaks for no fucking reason
-            if (!vehicle.Model.IsTrain) // to be extra fucking safe
-            {
-                // workaround of retarded feature above:
-                SetVehicleForwardSpeed(vehicle.Handle, speed);
-            }
-            vehicle.CurrentRPM = rpm;
-
-            await Delay(1); // Mandatory delay - without it radio station will not set properly
-
-            // Set the radio station to default set by player in Vehicle Menu
-            vehicle.RadioStation = (RadioStation)UserDefaults.VehicleDefaultRadio;
-
-            // Discard the model.
-            SetModelAsNoLongerNeeded(vehicleHash);
 
             return vehicle.Handle;
         }
