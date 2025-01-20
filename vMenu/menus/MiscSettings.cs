@@ -169,7 +169,7 @@ namespace vMenuClient.menus
             var timeCycles = new MenuListItem("TM", timeCycleModifiersListData, MathUtil.Clamp(LastTimeCycleModifierIndex, 0, Math.Max(0, timeCycleModifiersListData.Count - 1)), "Select a timecycle modifier and enable the checkbox above.");
             var timeCycleIntensity = new MenuSliderItem("Timecycle Modifier Intensity", "Set the timecycle modifier intensity.", 0, 20, LastTimeCycleModifierStrength, true);
 
-            var locationBlips = new MenuCheckboxItem("Location Blips", "Shows blips on the map for some common locations.", ShowLocationBlips);
+            /*var locationBlips = new MenuCheckboxItem("Location Blips", "Shows blips on the map for some common locations.", ShowLocationBlips);*/
             /*var playerBlips = new MenuCheckboxItem("Show Player Blips", "Shows blips on the map for all players. ~y~Note for when the server is using OneSync Infinity: this won't work for players that are too far away.", ShowPlayerBlips);*/
             /*var playerNames = new MenuCheckboxItem("Show Player Names", "Enables or disables player overhead names.", MiscShowOverheadNames);*/
             var respawnDefaultCharacter = new MenuCheckboxItem("Respawn As Default MP Character", "If you enable this, then you will (re)spawn as your default saved MP character. Note the server owner can globally disable this option. To set your default character, go to one of your saved MP Characters and click the 'Set As Default Character' button.", MiscRespawnDefaultCharacter);
@@ -616,7 +616,7 @@ namespace vMenuClient.menus
             {
                 menu.AddMenuItem(thermalVision);
             }
-            if (IsAllowed(Permission.MSLocationBlips))
+            /*if (IsAllowed(Permission.MSLocationBlips))
             {
                 menu.AddMenuItem(locationBlips);
                 ToggleBlips(ShowLocationBlips);
@@ -628,7 +628,7 @@ namespace vMenuClient.menus
             if (IsAllowed(Permission.MSOverheadNames))
             {
                 menu.AddMenuItem(playerNames);
-            }
+            }*/
             // always allowed, it just won't do anything if the server owner disabled the feature, but players can still toggle it.
             menu.AddMenuItem(respawnDefaultCharacter);
             if (IsAllowed(Permission.MSRestoreAppearance))
@@ -733,7 +733,7 @@ namespace vMenuClient.menus
                 {
                     LockCameraY = _checked;
                 }
-                else if (item == locationBlips)
+                /*else if (item == locationBlips)
                 {
                     ToggleBlips(_checked);
                     ShowLocationBlips = _checked;
@@ -745,7 +745,7 @@ namespace vMenuClient.menus
                 else if (item == playerNames)
                 {
                     MiscShowOverheadNames = _checked;
-                }
+                }*/
                 else if (item == respawnDefaultCharacter)
                 {
                     MiscRespawnDefaultCharacter = _checked;
