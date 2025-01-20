@@ -35,9 +35,9 @@ namespace vMenuClient
 
         // show location variables
         private float safeZoneSizeX = (1 / GetSafeZoneSize() / 3.0f) - 0.358f;
-        private string zoneDisplay = "";
-        private string streetDisplay = "";
-        private string headingDisplay = "";
+        //private string zoneDisplay = "";
+        //private string streetDisplay = "";
+        //private string headingDisplay = "";
 
         private readonly List<int> waypointPlayerIdsToRemove = new();
         private int voiceTimer = 0;
@@ -138,23 +138,23 @@ namespace vMenuClient
             {
                 Tick += DeathNotifications;
             }
-            if (IsAllowed(Permission.MSShowLocation))
+            /*if (IsAllowed(Permission.MSShowLocation))
             {
                 Tick += UpdateLocation;
-            }
+            }*/
             if (IsAllowed(Permission.PAMenu))
             {
                 Tick += ManageCamera;
                 Tick += DisableMovement;
             }
-            if (IsAllowed(Permission.MSPlayerBlips))
+            /*if (IsAllowed(Permission.MSPlayerBlips))
             {
                 Tick += PlayerBlipsControl;
             }
             if (IsAllowed(Permission.MSOverheadNames))
             {
                 Tick += PlayerOverheadNamesControl;
-            }
+            }*/
             if (IsAllowed(Permission.POMenu))
             {
                 Tick += PlayerOptions;
