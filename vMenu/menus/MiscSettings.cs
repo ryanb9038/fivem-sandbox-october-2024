@@ -29,14 +29,14 @@ namespace vMenuClient.menus
         public bool ShowCoordinates { get; private set; } = false;
         public bool HideHud { get; private set; } = false;
         public bool HideRadar { get; private set; } = false;
-        public bool ShowLocation { get; private set; } = false;
+        //public bool ShowLocation { get; private set; } = false;
         public bool DeathNotifications { get; private set; } = UserDefaults.MiscDeathNotifications;
         public bool JoinQuitNotifications { get; private set; } = UserDefaults.MiscJoinQuitNotifications;
         public bool LockCameraX { get; private set; } = false;
         public bool LockCameraY { get; private set; } = false;
-        public bool ShowLocationBlips { get; private set; } = false;
-        public bool ShowPlayerBlips { get; private set; } = false;
-        public bool MiscShowOverheadNames { get; private set; } = false;
+        //public bool ShowLocationBlips { get; private set; } = false;
+        //public bool ShowPlayerBlips { get; private set; } = false;
+        //public bool MiscShowOverheadNames { get; private set; } = false;
         public bool ShowVehicleModelDimensions { get; private set; } = false;
         public bool ShowPedModelDimensions { get; private set; } = false;
         public bool ShowPropModelDimensions { get; private set; } = false;
@@ -119,7 +119,7 @@ namespace vMenuClient.menus
             var coords = new MenuCheckboxItem("Show Coordinates", "Show your current coordinates at the top of your screen.", ShowCoordinates);
             var hideRadar = new MenuCheckboxItem("Hide Radar", "Hide the radar/minimap.", HideRadar);
             var hideHud = new MenuCheckboxItem("Hide Hud", "Hide all hud elements.", HideHud);
-            var showLocation = new MenuCheckboxItem("Location Display", "Shows your current location and heading, as well as the nearest cross road. Similar like PLD. ~r~Warning: This feature (can) take(s) up to -4.6 FPS when running at 60 Hz.", ShowLocation) { LeftIcon = MenuItem.Icon.WARNING };
+            //var showLocation = new MenuCheckboxItem("Location Display", "Shows your current location and heading, as well as the nearest cross road. Similar like PLD. ~r~Warning: This feature (can) take(s) up to -4.6 FPS when running at 60 Hz.", ShowLocation) { LeftIcon = MenuItem.Icon.WARNING };
             var drawTime = new MenuCheckboxItem("Show Time On Screen", "Shows you the current time on screen.", DrawTimeOnScreen);
             var saveSettings = new MenuItem("Save Personal Settings", "Save your current settings. All saving is done on the client side, if you re-install windows you will lose your settings. Settings are shared across all servers using vMenu.")
             {
@@ -595,10 +595,10 @@ namespace vMenuClient.menus
                 menu.AddMenuItem(connectionSubmenuBtn);
                 connectionSubmenuBtn.Label = "→→→";
             }
-            if (IsAllowed(Permission.MSShowLocation))
+            /*if (IsAllowed(Permission.MSShowLocation))
             {
                 menu.AddMenuItem(showLocation);
-            }
+            }*/
             menu.AddMenuItem(drawTime); // always allowed
             if (IsAllowed(Permission.MSJoinQuitNotifs))
             {
@@ -701,10 +701,10 @@ namespace vMenuClient.menus
                         DisplayRadar(true);
                     }
                 }
-                else if (item == showLocation)
+                /*else if (item == showLocation)
                 {
                     ShowLocation = _checked;
-                }
+                }*/
                 else if (item == drawTime)
                 {
                     DrawTimeOnScreen = _checked;
