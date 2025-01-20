@@ -240,7 +240,7 @@ namespace vMenuClient
             set { SetSavedSettingsBool("miscSpeedoMph", value); }
         }
 
-        public static bool MiscShowLocation
+        /*public static bool MiscShowLocation
         {
             get { return GetSettingsBool("miscShowLocation"); }
             set { SetSavedSettingsBool("miscShowLocation", value); }
@@ -262,7 +262,7 @@ namespace vMenuClient
         {
             get { return GetSettingsBool("miscShowOverheadNames"); }
             set { SetSavedSettingsBool("miscShowOverheadNames", value); }
-        }
+        }*/
 
         public static bool MiscRestorePlayerAppearance
         {
@@ -554,7 +554,7 @@ namespace vMenuClient
                 MiscSpeedMph = MainMenu.MiscSettingsMenu.ShowSpeedoMph;
                 prefs.Add("miscSpeedMph", MiscSpeedMph);
 
-                MiscShowLocation = MainMenu.MiscSettingsMenu.ShowLocation;
+                /*MiscShowLocation = MainMenu.MiscSettingsMenu.ShowLocation;
                 prefs.Add("miscShowLocation", MiscShowLocation);
 
                 MiscLocationBlips = MainMenu.MiscSettingsMenu.ShowLocationBlips;
@@ -564,7 +564,7 @@ namespace vMenuClient
                 prefs.Add("miscShowPlayerBlips", MiscShowPlayerBlips);
 
                 MiscShowOverheadNames = MainMenu.MiscSettingsMenu.MiscShowOverheadNames;
-                prefs.Add("miscShowOverheadNames", MiscShowOverheadNames);
+                prefs.Add("miscShowOverheadNames", MiscShowOverheadNames);*/
 
                 MiscRespawnDefaultCharacter = MainMenu.MiscSettingsMenu.MiscRespawnDefaultCharacter;
                 prefs.Add("miscRespawnDefaultCharacter", MiscRespawnDefaultCharacter);
