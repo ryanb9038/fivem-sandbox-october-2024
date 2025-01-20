@@ -749,13 +749,13 @@ namespace vMenuClient
             }
 
             // draw location
-            if (MainMenu.MiscSettingsMenu.ShowLocation && IsAllowed(Permission.MSShowLocation))
+            /*if (MainMenu.MiscSettingsMenu.ShowLocation && IsAllowed(Permission.MSShowLocation))
             {
                 SetScriptGfxAlign(0, 84);
                 SetScriptGfxAlignParams(0f, 0f, 0f, 0f);
                 ShowLocation();
                 ResetScriptGfxAlign();
-            }
+            }*/
 
             // draw time
             if (MainMenu.MiscSettingsMenu.DrawTimeOnScreen)
@@ -782,7 +782,7 @@ namespace vMenuClient
         }
         #endregion
 
-        #region Update Location for location display
+        /*#region Update Location for location display
         /// <summary>
         /// Updates the location for location display.
         /// </summary>
@@ -838,9 +838,9 @@ namespace vMenuClient
                 await Delay(1000);
             }
         }
-        #endregion
+        #endregion*/
 
-        #region ShowLocation
+        /*#region ShowLocation
         /// <summary>
         /// Show location function to show the player's location.
         /// </summary>
@@ -848,24 +848,24 @@ namespace vMenuClient
         {
             // Draw the street name + crossing.
             SetTextWrap(0f, 1f);
-            DrawTextOnScreen(streetDisplay, 0.234f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(0.48f, 6) - GetTextScaleHeight(0.48f, 6)/*0.925f - safeZoneSizeY*/, 0.48f);
+            DrawTextOnScreen(streetDisplay, 0.234f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(0.48f, 6) - GetTextScaleHeight(0.48f, 6)/*0.925f - safeZoneSizeY*//*, 0.48f);
 
             // Draw the zone name.
             SetTextWrap(0f, 1f);
-            DrawTextOnScreen(zoneDisplay, 0.234f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(0.45f, 6) - GetTextScaleHeight(0.95f, 6)/*0.9485f - safeZoneSizeY*/, 0.45f);
+            DrawTextOnScreen(zoneDisplay, 0.234f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(0.45f, 6) - GetTextScaleHeight(0.95f, 6)/*0.9485f - safeZoneSizeY*//*, 0.45f);
 
             // Draw the left border for the heading character.
-            DrawTextOnScreen("~t~|", 0.188f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(1.2f, 6) - GetTextScaleHeight(0.4f, 6)/*0.915f - safeZoneSizeY*/, 1.2f, Alignment.Left);
+            DrawTextOnScreen("~t~|", 0.188f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(1.2f, 6) - GetTextScaleHeight(0.4f, 6)/*0.915f - safeZoneSizeY*//*, 1.2f, Alignment.Left);
 
             // Draw the heading character.
             SetTextWrap(0f, 1f);
-            DrawTextOnScreen(headingDisplay, 0.208f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(1.2f, 6) - GetTextScaleHeight(0.4f, 6)/*0.915f - safeZoneSizeY*/, 1.2f, Alignment.Center);
+            DrawTextOnScreen(headingDisplay, 0.208f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(1.2f, 6) - GetTextScaleHeight(0.4f, 6)/*0.915f - safeZoneSizeY*//*, 1.2f, Alignment.Center);
 
             // Draw the right border for the heading character.
             SetTextWrap(0f, 1f);
-            DrawTextOnScreen("~t~|", 0.228f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(1.2f, 6) - GetTextScaleHeight(0.4f, 6)/*0.915f - safeZoneSizeY*/, 1.2f, Alignment.Right);
+            DrawTextOnScreen("~t~|", 0.228f + safeZoneSizeX, GetSafeZoneSize() - GetTextScaleHeight(1.2f, 6) - GetTextScaleHeight(0.4f, 6)/*0.915f - safeZoneSizeY*//*, 1.2f, Alignment.Right);
         }
-        #endregion
+        #endregion*/
 
         #region Private ShowSpeed Functions
         /// <summary>
@@ -2175,7 +2175,7 @@ namespace vMenuClient
         }
         #endregion
 
-        #region player blips tasks
+        /*#region player blips tasks
         private async Task PlayerBlipsControl()
         {
             if (DecorIsRegisteredAsType("vmenu_player_blip_sprite_id", 3))
@@ -2388,7 +2388,7 @@ namespace vMenuClient
                 }
             }
         }
-        #endregion
+        #endregion*/
 
         #region Online Player Options Tasks
         /// <summary>
