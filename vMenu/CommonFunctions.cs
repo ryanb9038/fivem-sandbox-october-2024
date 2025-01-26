@@ -1391,15 +1391,16 @@ namespace vMenuClient
             if (vehicle != null && vehicle.Exists())
             {
                 vehicle.Mods.InstallModKit();
-                // set the extras
+        
+                // Apply extras with proper validation
                 foreach (var extra in vehicleInfo.extras)
                 {
                     if (DoesExtraExist(vehicle.Handle, extra.Key))
                     {
-                        vehicle.ToggleExtra(extra.Key, extra.Value);
+                        vehicle.ToggleExtra(extra.Key, extra.Value); // Enable or disable extra
                     }
                 }
-
+        
                 SetVehicleWheelType(vehicle.Handle, vehicleInfo.wheelType);
                 SetVehicleMod(vehicle.Handle, 23, 0, vehicleInfo.customWheels);
                 if (vehicle.Model.IsBike)
@@ -1411,9 +1412,9 @@ namespace vMenuClient
                 ToggleVehicleMod(vehicle.Handle, 20, vehicleInfo.tyreSmoke);
                 ToggleVehicleMod(vehicle.Handle, 22, vehicleInfo.xenonHeadlights);
                 SetVehicleLivery(vehicle.Handle, vehicleInfo.livery);
-
-                bool useCustomRgbPrimary = vehicleInfo.colors.ContainsKey("customPrimaryR") && vehicleInfo.colors.ContainsKey("customPrimaryG") && vehicleInfo.colors.ContainsKey("customPrimaryB");
-                if (useCustomRgbPrimary && vehicleInfo.colors["customPrimaryR"] > 0 && vehicleInfo.colors["customPrimaryG"] > 0 && vehicleInfo.colors["customPrimaryB"] > 0)
+        
+                // Apply colors
+                if (vehicleInfo.colors.ContainsKey("customPrimaryR") && vehicleInfo.colors.ContainsKey("customPrimaryG") && vehicleInfo.colors.ContainsKey("customPrimaryB"))
                 {
                     vehicle.Mods.CustomPrimaryColor = System.Drawing.Color.FromArgb(255, vehicleInfo.colors["customPrimaryR"], vehicleInfo.colors["customPrimaryG"], vehicleInfo.colors["customPrimaryB"]);
                 }
@@ -1421,33 +1422,32 @@ namespace vMenuClient
                 {
                     vehicle.Mods.PrimaryColor = (VehicleColor)vehicleInfo.colors["primary"];
                 }
-
-                bool useCustomRgbSecondary = vehicleInfo.colors.ContainsKey("customSecondaryR") && vehicleInfo.colors.ContainsKey("customSecondaryG") && vehicleInfo.colors.ContainsKey("customSecondaryB");
-                if (useCustomRgbSecondary && vehicleInfo.colors["customSecondaryR"] > 0 && vehicleInfo.colors["customSecondaryG"] > 0 && vehicleInfo.colors["customSecondaryB"] > 0)
+        
+                if (vehicleInfo.colors.ContainsKey("customSecondaryR") && vehicleInfo.colors.ContainsKey("customSecondaryG") && vehicleInfo.colors.ContainsKey("customSecondaryB"))
                 {
-                    vehicle.Mods.CustomSecondaryColor = System.Drawing.Color.FromArgb(255, vehicleInfo.colors["customSecondaryR"], vehicleInfo.colors["customSecondaryR"], vehicleInfo.colors["customSecondaryB"]);
+                    vehicle.Mods.CustomSecondaryColor = System.Drawing.Color.FromArgb(255, vehicleInfo.colors["customSecondaryR"], vehicleInfo.colors["customSecondaryG"], vehicleInfo.colors["customSecondaryB"]);
                 }
                 else
                 {
                     vehicle.Mods.SecondaryColor = (VehicleColor)vehicleInfo.colors["secondary"];
                 }
-
+        
                 SetVehicleInteriorColour(vehicle.Handle, vehicleInfo.colors["trim"]);
                 SetVehicleDashboardColour(vehicle.Handle, vehicleInfo.colors["dash"]);
-
+        
                 SetVehicleExtraColours(vehicle.Handle, vehicleInfo.colors["pearlescent"], vehicleInfo.colors["wheels"]);
-
+        
                 SetVehicleNumberPlateText(vehicle.Handle, vehicleInfo.plateText);
                 SetVehicleNumberPlateTextIndex(vehicle.Handle, vehicleInfo.plateStyle);
-
+        
                 SetVehicleWindowTint(vehicle.Handle, vehicleInfo.windowTint);
-
+        
                 vehicle.CanTiresBurst = !vehicleInfo.bulletProofTires;
-
+        
                 SetVehicleEnveffScale(vehicle.Handle, vehicleInfo.enveffScale);
-
+        
                 VehicleOptions.SetHeadlightsColorForVehicle(vehicle, vehicleInfo.headlightColor);
-
+        
                 vehicle.Mods.NeonLightsColor = System.Drawing.Color.FromArgb(red: vehicleInfo.colors["neonR"], green: vehicleInfo.colors["neonG"], blue: vehicleInfo.colors["neonB"]);
                 vehicle.Mods.SetNeonLightsOn(VehicleNeonLight.Left, vehicleInfo.neonLeft);
                 vehicle.Mods.SetNeonLightsOn(VehicleNeonLight.Right, vehicleInfo.neonRight);
@@ -1474,6 +1474,17 @@ namespace vMenuClient
                 DoMods();
             }
         }
+
+        // Re-apply mods after delay to ensure performance mods are set
+        await Delay(delay);
+        vehicleInfo.mods.ToList().ForEach(mod =>
+        {
+            if (vehicle != null && vehicle.Exists())
+            {
+                SetVehicleMod(vehicle.Handle, mod.Key, mod.Value, vehicleInfo.customWheels);
+            }
+        });
+                                    
         #endregion
         #endregion
 
