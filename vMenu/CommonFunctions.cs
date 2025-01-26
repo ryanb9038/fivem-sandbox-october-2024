@@ -1583,13 +1583,14 @@ namespace vMenuClient
                     #endregion
 
                     var extras = new Dictionary<int, bool>();
-                    for (var i = 0; i < 20; i++)
+                    foreach (var extraIndex in Enumerable.Range(0, 20))
                     {
-                        if (veh.ExtraExists(i))
+                        if (DoesExtraExist(veh.Handle, extraIndex))
                         {
-                            extras.Add(i, veh.IsExtraOn(i));
+                            vehicleInfo.extras.Add(extraIndex, veh.IsExtraOn(extraIndex));
                         }
                     }
+
 
                     var vi = new VehicleInfo()
                     {
