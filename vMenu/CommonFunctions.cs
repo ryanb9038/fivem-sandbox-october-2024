@@ -1375,6 +1375,12 @@ namespace vMenuClient
                 }
             }
 
+            // If mod info about the vehicle was specified, check if it's not null.
+            if (saveName != null)
+            {
+                ApplyVehicleModsDelayed(vehicle, vehicleInfo, 500);
+            }
+
             // Set the previous vehicle to the new vehicle.
             _previousVehicle = vehicle;
 
