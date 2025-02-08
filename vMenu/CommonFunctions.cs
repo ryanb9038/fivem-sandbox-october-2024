@@ -1239,6 +1239,8 @@ namespace vMenuClient
                 return 0;
             }
 
+            // Notify the player immediately that the spawn process has started.
+            Notify.Info("~g~Vehicle Spawning...");
 
             var speed = 0f;
             var rpm = 0f;
@@ -1281,9 +1283,6 @@ namespace vMenuClient
 
             // Update the last spawn time
             lastSpawnTime = DateTime.UtcNow;
-
-            // Notify the player that the vehicle is spawning
-            Notify.Info("~g~Vehicle Spawning...");
 
             // If the previous vehicle exists...
             if (_previousVehicle != null)
