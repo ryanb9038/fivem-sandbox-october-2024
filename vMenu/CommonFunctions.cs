@@ -1229,19 +1229,18 @@ namespace vMenuClient
         {
             // Get the cooldown time from ConVar (default to 3 seconds if not set)
             int spawnCooldown = int.Parse(GetConvar("vehicle_spawn_cooldown", "3"));
-
+        
             // Check cooldown before spawning the vehicle
             if ((DateTime.UtcNow - lastSpawnTime).TotalSeconds < spawnCooldown)
             {
                 Notify.Alert($"Please wait {spawnCooldown} seconds before spawning another vehicle.");
                 PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
-
                 return 0;
             }
-
+        
             // Notify the player immediately that the spawn process has started.
             Notify.Info("~g~Vehicle Spawning...");
-
+        
             var speed = 0f;
             var rpm = 0f;
             if (Game.PlayerPed.IsInVehicle())
@@ -1250,7 +1249,7 @@ namespace vMenuClient
                 speed = GetEntitySpeedVector(tmpOldVehicle.Handle, true).Y; // get forward/backward speed only
                 rpm = tmpOldVehicle.CurrentRPM;
             }
-
+        
             var modelClass = GetVehicleClassFromName(vehicleHash);
             if (!VehicleSpawner.allowedCategories[modelClass])
             {
@@ -1258,7 +1257,7 @@ namespace vMenuClient
                 PlaySoundFrontend(-1, "ERROR", "HUD_AMMO_SHOP_SOUNDSET", true);
                 return 0;
             }
-
+        
             if (!skipLoad)
             {
                 var successFull = await LoadModel(vehicleHash);
@@ -1268,9 +1267,9 @@ namespace vMenuClient
                     return 0;
                 }
             }
-
+        
             Log("Spawning of vehicle is NOT cancelled, if this model is invalid then there's something wrong.");
-
+        
             // Get the heading & position for where the vehicle should be spawned.
             var pos = new Vector3(x, y, z);
             if (pos.IsZero)
@@ -1278,12 +1277,12 @@ namespace vMenuClient
                 pos = spawnInside ? GetEntityCoords(Game.PlayerPed.Handle, true) : GetOffsetFromEntityInWorldCoords(Game.PlayerPed.Handle, 0f, 8f, 0f);
                 pos += new Vector3(0f, 0f, 1f);
             }
-
+        
             heading = heading == -1 ? GetEntityHeading(Game.PlayerPed.Handle) + (spawnInside ? 0f : 90f) : heading;
-
+        
             // Update the last spawn time
             lastSpawnTime = DateTime.UtcNow;
-
+        
             // If the previous vehicle exists...
             if (_previousVehicle != null)
             {
@@ -1310,37 +1309,48 @@ namespace vMenuClient
                     _previousVehicle = null;
                 }
             }
-
+        
+            // Prepare a list to hold any passengers from the player's current vehicle.
+            List<Ped> passengersToTransfer = new List<Ped>();
+        
+            // If the player is in a vehicle and (replacePrevious is true or replacement is not disabled)
             if (Game.PlayerPed.IsInVehicle() && (replacePrevious || !IsAllowed(Permission.VSDisableReplacePrevious)))
             {
-                if (GetVehicle().Driver == Game.PlayerPed)
+                Vehicle oldVeh = GetVehicle();
+                if (oldVeh.Driver == Game.PlayerPed)
                 {
-                    var tmpveh = GetVehicle();
-                    SetVehicleHasBeenOwnedByPlayer(tmpveh.Handle, false);
-                    SetEntityAsMissionEntity(tmpveh.Handle, true, true);
-
-                    if (_previousVehicle != null)
+                    // If spawnInside is enabled, gather passengers from the old vehicle.
+                    if (spawnInside)
                     {
-                        if (_previousVehicle.Handle == tmpveh.Handle)
+                        // Iterate over all occupants (which includes both driver and passengers)
+                        foreach (var occupant in oldVeh.Occupants)
                         {
-                            _previousVehicle = null;
+                            // Skip the driver
+                            if (occupant.Handle != Game.PlayerPed.Handle)
+                            {
+                                // Ensure the ped leaves the old vehicle.
+                                TaskLeaveVehicle(occupant.Handle, oldVeh.Handle, 0);
+                                passengersToTransfer.Add(occupant);
+                            }
                         }
                     }
-                    tmpveh.Delete();
+                    // Delete the old vehicle as before.
+                    SetVehicleHasBeenOwnedByPlayer(oldVeh.Handle, false);
+                    SetEntityAsMissionEntity(oldVeh.Handle, true, true);
+                    if (_previousVehicle != null && _previousVehicle.Handle == oldVeh.Handle)
+                    {
+                        _previousVehicle = null;
+                    }
+                    oldVeh.Delete();
                     Notify.Info("Your old car was removed to prevent your new car from glitching inside it. Next time, get out of your vehicle before spawning a new one if you want to keep your old one.");
                 }
             }
-
-            if (_previousVehicle != null)
-            {
-                _previousVehicle.PreviouslyOwnedByPlayer = false;
-            }
-
+        
             if (Game.PlayerPed.IsInVehicle() && x == 0f && y == 0f && z == 0f)
             {
                 pos = GetOffsetFromEntityInWorldCoords(Game.PlayerPed.Handle, 0, 8f, 0.1f) + new Vector3(0f, 0f, 1f);
             }
-
+        
             // Create the new vehicle and remove the need to hotwire the car.
             var vehicle = new Vehicle(CreateVehicle(vehicleHash, pos.X, pos.Y, pos.Z, heading, true, false))
             {
@@ -1350,42 +1360,71 @@ namespace vMenuClient
                 IsStolen = false,
                 IsWanted = false
             };
-
+        
             Log($"New vehicle, hash:{vehicleHash}, handle:{vehicle.Handle}, force-re-save-name:{saveName ?? "NONE"}, created at x:{pos.X} y:{pos.Y} z:{pos.Z + 1f} heading:{heading}");
-
+        
             // If spawnInside is true
             if (spawnInside)
             {
                 // Set the vehicle's engine to be running.
                 vehicle.IsEngineRunning = true;
-
-                // Set the ped into the vehicle.
+        
+                // Set the ped into the vehicle as the driver.
                 new Ped(Game.PlayerPed.Handle).SetIntoVehicle(vehicle, VehicleSeat.Driver);
-
+        
                 // If the vehicle is a helicopter and the player is in the air, set the blades to be full speed.
                 if (vehicle.ClassType == VehicleClass.Helicopters && GetEntityHeightAboveGround(Game.PlayerPed.Handle) > 10.0f)
                 {
                     SetHeliBladesFullSpeed(vehicle.Handle);
                 }
-                // If it's not a helicopter or the player is not in the air, set the vehicle on the ground properly.
+                // Otherwise, place the vehicle on the ground.
                 else
                 {
                     vehicle.PlaceOnGround();
                 }
+        
+                // After a short delay, warp gathered passengers into the new vehicle.
+                if (passengersToTransfer.Count > 0)
+                {
+                    // Wait briefly to ensure the new vehicle is fully ready.
+                    await Delay(200);
+        
+                    // Determine how many passenger seats are available (driver seat is -1).
+                    int newVehTotalSeats = GetVehicleModelNumberOfSeats((uint)vehicle.Model.Hash);
+                    int newAvailablePassengerSeats = newVehTotalSeats - 1;
+        
+                    // Transfer as many passengers as possible.
+                    int seatIndex = 0; // Passenger seats are indexed starting at 0.
+                    foreach (var passenger in passengersToTransfer)
+                    {
+                        if (seatIndex < newAvailablePassengerSeats)
+                        {
+                            // Clear any tasks the ped might have.
+                            ClearPedTasksImmediately(passenger.Handle);
+                            TaskWarpPedIntoVehicle(passenger.Handle, vehicle.Handle, seatIndex);
+                            seatIndex++;
+                        }
+                        else
+                        {
+                            // No more available seats.
+                            break;
+                        }
+                    }
+                }
             }
-
+        
             // If mod info about the vehicle was specified, check if it's not null.
             if (saveName != null)
             {
                 ApplyVehicleModsDelayed(vehicle, vehicleInfo, 500);
             }
-
+        
             // Set the previous vehicle to the new vehicle.
             _previousVehicle = vehicle;
-
+        
             return vehicle.Handle;
         }
-
+        
         /// <summary>
         /// Waits for the given delay before applying the vehicle mods
         /// </summary>
@@ -1404,7 +1443,7 @@ namespace vMenuClient
                         vehicle.ToggleExtra(extra.Key, extra.Value);
                     }
                 }
-
+        
                 SetVehicleWheelType(vehicle.Handle, vehicleInfo.wheelType);
                 SetVehicleMod(vehicle.Handle, 23, 0, vehicleInfo.customWheels);
                 if (vehicle.Model.IsBike)
@@ -1416,7 +1455,7 @@ namespace vMenuClient
                 ToggleVehicleMod(vehicle.Handle, 20, vehicleInfo.tyreSmoke);
                 ToggleVehicleMod(vehicle.Handle, 22, vehicleInfo.xenonHeadlights);
                 SetVehicleLivery(vehicle.Handle, vehicleInfo.livery);
-
+        
                 bool useCustomRgbPrimary = vehicleInfo.colors.ContainsKey("customPrimaryR") && vehicleInfo.colors.ContainsKey("customPrimaryG") && vehicleInfo.colors.ContainsKey("customPrimaryB");
                 if (useCustomRgbPrimary && vehicleInfo.colors["customPrimaryR"] > 0 && vehicleInfo.colors["customPrimaryG"] > 0 && vehicleInfo.colors["customPrimaryB"] > 0)
                 {
@@ -1426,39 +1465,39 @@ namespace vMenuClient
                 {
                     vehicle.Mods.PrimaryColor = (VehicleColor)vehicleInfo.colors["primary"];
                 }
-
+        
                 bool useCustomRgbSecondary = vehicleInfo.colors.ContainsKey("customSecondaryR") && vehicleInfo.colors.ContainsKey("customSecondaryG") && vehicleInfo.colors.ContainsKey("customSecondaryB");
                 if (useCustomRgbSecondary && vehicleInfo.colors["customSecondaryR"] > 0 && vehicleInfo.colors["customSecondaryG"] > 0 && vehicleInfo.colors["customSecondaryB"] > 0)
                 {
-                    vehicle.Mods.CustomSecondaryColor = System.Drawing.Color.FromArgb(255, vehicleInfo.colors["customSecondaryR"], vehicleInfo.colors["customSecondaryR"], vehicleInfo.colors["customSecondaryB"]);
+                    vehicle.Mods.CustomSecondaryColor = System.Drawing.Color.FromArgb(255, vehicleInfo.colors["customSecondaryR"], vehicleInfo.colors["customSecondaryG"], vehicleInfo.colors["customSecondaryB"]);
                 }
                 else
                 {
                     vehicle.Mods.SecondaryColor = (VehicleColor)vehicleInfo.colors["secondary"];
                 }
-
+        
                 SetVehicleInteriorColour(vehicle.Handle, vehicleInfo.colors["trim"]);
                 SetVehicleDashboardColour(vehicle.Handle, vehicleInfo.colors["dash"]);
-
+        
                 SetVehicleExtraColours(vehicle.Handle, vehicleInfo.colors["pearlescent"], vehicleInfo.colors["wheels"]);
-
+        
                 SetVehicleNumberPlateText(vehicle.Handle, vehicleInfo.plateText);
                 SetVehicleNumberPlateTextIndex(vehicle.Handle, vehicleInfo.plateStyle);
-
+        
                 SetVehicleWindowTint(vehicle.Handle, vehicleInfo.windowTint);
-
+        
                 vehicle.CanTiresBurst = !vehicleInfo.bulletProofTires;
-
+        
                 SetVehicleEnveffScale(vehicle.Handle, vehicleInfo.enveffScale);
-
+        
                 VehicleOptions.SetHeadlightsColorForVehicle(vehicle, vehicleInfo.headlightColor);
-
+        
                 vehicle.Mods.NeonLightsColor = System.Drawing.Color.FromArgb(red: vehicleInfo.colors["neonR"], green: vehicleInfo.colors["neonG"], blue: vehicleInfo.colors["neonB"]);
                 vehicle.Mods.SetNeonLightsOn(VehicleNeonLight.Left, vehicleInfo.neonLeft);
                 vehicle.Mods.SetNeonLightsOn(VehicleNeonLight.Right, vehicleInfo.neonRight);
                 vehicle.Mods.SetNeonLightsOn(VehicleNeonLight.Front, vehicleInfo.neonFront);
                 vehicle.Mods.SetNeonLightsOn(VehicleNeonLight.Back, vehicleInfo.neonBack);
-
+        
                 void DoMods()
                 {
                     vehicleInfo.mods.ToList().ForEach(mod =>
@@ -1469,7 +1508,7 @@ namespace vMenuClient
                         }
                     });
                 }
-
+        
                 DoMods();
                 // Performance mods require a delay after setting the modkit,
                 // so we just do it once first so all the visual mods load instantly,
@@ -1481,6 +1520,7 @@ namespace vMenuClient
         }
         #endregion
         #endregion
+
 
         #region VehicleInfo struct
         /// <summary>
