@@ -1311,29 +1311,42 @@ namespace vMenuClient
                 }
             }
 
+            // Prepare a list to hold any passengers from the player's current vehicle.
+            List<Ped> passengersToTransfer = new List<Ped>();
+
+            // If the player is in a vehicle and (replacePrevious is true or replacement is not disabled)
             if (Game.PlayerPed.IsInVehicle() && (replacePrevious || !IsAllowed(Permission.VSDisableReplacePrevious)))
             {
-                if (GetVehicle().Driver == Game.PlayerPed)
+                Vehicle oldVeh = GetVehicle();
+                if (oldVeh.Driver == Game.PlayerPed)
                 {
-                    var tmpveh = GetVehicle();
-                    SetVehicleHasBeenOwnedByPlayer(tmpveh.Handle, false);
-                    SetEntityAsMissionEntity(tmpveh.Handle, true, true);
-
-                    if (_previousVehicle != null)
+                    // **NEW CODE:** If spawnInside is enabled, gather any passengers from the old vehicle.
+                    if (spawnInside)
                     {
-                        if (_previousVehicle.Handle == tmpveh.Handle)
+                        // Get the total number of seats (driver seat included)
+                        int oldVehTotalSeats = GetVehicleModelNumberOfSeats((uint)oldVeh.Model.Hash);
+                        // Passenger seats are those that are not the driver (-1). In GTA V the seats are usually enumerated
+                        // as: Driver = -1, and passengers as 0, 1, 2, ... 
+                        // Loop through each passenger seat available.
+                        for (int seat = 0; seat < oldVehTotalSeats - 1; seat++)
                         {
-                            _previousVehicle = null;
+                            Ped occupant = oldVeh.GetPedOnSeat((VehicleSeat)seat);
+                            if (occupant != null && occupant.Exists() && occupant.Handle != Game.PlayerPed.Handle)
+                            {
+                                passengersToTransfer.Add(occupant);
+                            }
                         }
                     }
-                    tmpveh.Delete();
+                    // Continue to delete the old vehicle as before.
+                    SetVehicleHasBeenOwnedByPlayer(oldVeh.Handle, false);
+                    SetEntityAsMissionEntity(oldVeh.Handle, true, true);
+                    if (_previousVehicle != null && _previousVehicle.Handle == oldVeh.Handle)
+                    {
+                        _previousVehicle = null;
+                    }
+                    oldVeh.Delete();
                     Notify.Info("Your old car was removed to prevent your new car from glitching inside it. Next time, get out of your vehicle before spawning a new one if you want to keep your old one.");
                 }
-            }
-
-            if (_previousVehicle != null)
-            {
-                _previousVehicle.PreviouslyOwnedByPlayer = false;
             }
 
             if (Game.PlayerPed.IsInVehicle() && x == 0f && y == 0f && z == 0f)
@@ -1359,7 +1372,7 @@ namespace vMenuClient
                 // Set the vehicle's engine to be running.
                 vehicle.IsEngineRunning = true;
 
-                // Set the ped into the vehicle.
+                // Set the ped into the vehicle as the driver.
                 new Ped(Game.PlayerPed.Handle).SetIntoVehicle(vehicle, VehicleSeat.Driver);
 
                 // If the vehicle is a helicopter and the player is in the air, set the blades to be full speed.
@@ -1367,10 +1380,29 @@ namespace vMenuClient
                 {
                     SetHeliBladesFullSpeed(vehicle.Handle);
                 }
-                // If it's not a helicopter or the player is not in the air, set the vehicle on the ground properly.
+                // Otherwise, place the vehicle on the ground.
                 else
                 {
                     vehicle.PlaceOnGround();
+                }
+
+                // **NEW CODE:** If we gathered passengers from the old vehicle,
+                // check if the new vehicle has enough available passenger seats to move them all.
+                if (passengersToTransfer.Count > 0)
+                {
+                    int newVehTotalSeats = GetVehicleModelNumberOfSeats((uint)vehicle.Model.Hash);
+                    // Available passenger seats = total seats - 1 (driver seat)
+                    int newAvailablePassengerSeats = newVehTotalSeats - 1;
+                    if (passengersToTransfer.Count <= newAvailablePassengerSeats)
+                    {
+                        int seatIndex = 0;
+                        foreach (var passenger in passengersToTransfer)
+                        {
+                            // Use TaskWarpPedIntoVehicle to immediately transfer the passenger into the new vehicle.
+                            TaskWarpPedIntoVehicle(passenger.Handle, vehicle.Handle, seatIndex);
+                            seatIndex++;
+                        }
+                    }
                 }
             }
 
@@ -1481,6 +1513,7 @@ namespace vMenuClient
         }
         #endregion
         #endregion
+
 
         #region VehicleInfo struct
         /// <summary>
