@@ -900,5 +900,10 @@ namespace vMenuClient
             }
         }
         #endregion
+        [Export("IsMenuOpen")]
+        public bool IsMenuOpen()
+        {
+            return MenuAPI.MenuController.IsAnyMenuOpen();
+        }
     }
 }
