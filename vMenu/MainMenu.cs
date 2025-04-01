@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using CitizenFX.Core.Native;
+
 using CitizenFX.Core;
 
 using MenuAPI;
