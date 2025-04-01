@@ -343,6 +343,9 @@ namespace vMenuClient
             // Request the permissions data from the server.
             TriggerServerEvent("vMenu:RequestPermissions");
 
+            // Register export so other resources can check if vMenu is open
+            Exports.Add("IsMenuOpen", new Func<bool>(() => MenuAPI.MenuController.IsAnyMenuOpen()));
+
             // Request server state from the server.
             TriggerServerEvent("vMenu:RequestServerState");
         }
@@ -900,10 +903,5 @@ namespace vMenuClient
             }
         }
         #endregion
-        // Export IsMenuOpen so other resources (like NPWD) can check if vMenu is open
-        Exports.Add("IsMenuOpen", new Func<bool>(() =>
-        {
-            return MenuAPI.MenuController.IsAnyMenuOpen();
-        }));
     }
 }
