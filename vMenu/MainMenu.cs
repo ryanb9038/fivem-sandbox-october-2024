@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using CitizenFX.Core.Native;
-
 using CitizenFX.Core;
 
 using MenuAPI;
@@ -902,10 +900,10 @@ namespace vMenuClient
             }
         }
         #endregion
-        [Export("IsMenuOpen")]
-        public bool IsMenuOpen()
+        // Export IsMenuOpen so other resources (like NPWD) can check if vMenu is open
+        Exports.Add("IsMenuOpen", new Func<bool>(() =>
         {
             return MenuAPI.MenuController.IsAnyMenuOpen();
-        }
+        }));
     }
 }
