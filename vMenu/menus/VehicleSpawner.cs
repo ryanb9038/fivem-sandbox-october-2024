@@ -75,7 +75,7 @@ namespace vMenuClient.menus
 
                             if (!allowedCategories[cat])
                             {
-                                categoryBtn.Description = "~r~You must join the discord to access this category. Type '~g~/discord~r~' to join.";
+                                categoryBtn.Description = "~r~You must join the discord to access this. Type '~g~/discord~r~' to join, then restart your game.";
                                 categoryBtn.Enabled = false;
                                 categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
                                 categoryBtn.Label = "";
