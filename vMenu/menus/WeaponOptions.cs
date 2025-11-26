@@ -267,7 +267,7 @@ namespace vMenuClient.menus
             if (addonWeaponsMenu.Size == 0)
             {
                 addonWeaponsBtn.LeftIcon = MenuItem.Icon.LOCK;
-                addonWeaponsBtn.Description = "~r~You must join the discord to access this. After joining, restart FiveM. ~b~(discord.gg/fivemsandbox)";
+                addonWeaponsBtn.Description = "~r~You must join the discord to access this. Type '~g~/discord~r~' to join, then restart your game.";
                 addonWeaponsBtn.Enabled = false;
             }
             #endregion
