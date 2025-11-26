@@ -75,7 +75,7 @@ namespace vMenuClient.menus
 
                             if (!allowedCategories[cat])
                             {
-                                categoryBtn.Description = "This vehicle class is disabled by the server.";
+                                categoryBtn.Description = "~r~You must join the discord to access this category. Type '~g~/discord~r~' to join.";
                                 categoryBtn.Enabled = false;
                                 categoryBtn.LeftIcon = MenuItem.Icon.LOCK;
                                 categoryBtn.Label = "";
